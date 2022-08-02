@@ -57,5 +57,5 @@ logging:
     web: INFO
     com.github.zmzhoustar: INFO
     org.springframework: INFO
-logstash:
-  address: 192.168.163.132:4567
+#logstash:
+#  address: 192.168.163.132:4567

@@ -40,6 +40,7 @@ public class WebSocketInterceptor implements HandshakeInterceptor {
 			String uuid = UUID.randomUUID().toString().replace("-", "");
 			//将uuid放到websocketsession中
 			map.put(Constants.USER_UUID_KEY, uuid);
+			log.info("uuid:{}",uuid);
 			return true;
 		}
 		return false;
