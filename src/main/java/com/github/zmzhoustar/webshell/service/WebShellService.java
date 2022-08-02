@@ -135,6 +135,7 @@ public class WebShellService {
 				sshData.getPort());
 		session.setConfig(config);
 		//设置密码
+//        log.info("解密后密码:{}",SecretUtils.decrypt(sshData.getPassword(), SecretUtils.AES_KEY));
 		session.setPassword(SecretUtils.decrypt(sshData.getPassword(), SecretUtils.AES_KEY));
 		//连接超时时间30s
 		session.connect(30000);
