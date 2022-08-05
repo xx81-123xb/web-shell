@@ -29,7 +29,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
 
 	@Override
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry webSocketHandlerRegistry) {
-		//socket通道
+//		socket通道
 		//指定处理器和路径
 		webSocketHandlerRegistry.addHandler(webSocketHandler, "/shell")
 				.addInterceptors(new WebSocketInterceptor())
