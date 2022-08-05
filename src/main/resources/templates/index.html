@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>web shell 登录Linux远程主机</title>
     <link rel="shortcut icon" th:href="@{/static/img/favicon.ico}" />
@@ -14,34 +15,17 @@
     <script type="text/javascript" th:src="@{/static/js/crypto-js.min.js}"></script>
     <script type="text/javascript" th:src="@{/static/js/web-shell.js}"></script>
 </head>
+
 <body>
-    <!--<a href='https://gitee.com/zmzhou-star/web-shell' style="float: right;">-->
-        <!--<img src='https://gitee.com/zmzhou-star/web-shell/widgets/widget_1.svg' alt='Fork me on Gitee'/>-->
-    <!--</a>-->
     <div id="login" class="login">
-        <h1>登录Linux远程主机</h1>
+        <h1>登录Linux远程主机测试</h1>
         <form action="#" onsubmit="login()">
-            <input type="text" id="host" required="required" placeholder="主机IP" value="192.168.1.80"/>
-            <!--<input type="text" id="host" required="required" placeholder="主机IP" value="192.168.1.80"/>-->
-            <input type="text" id="username" value="root" required="required" placeholder="用户名" />
-            <input type="password" id="password" required="required" placeholder="密码" value="SHENLAN@2016"/>
+            <input type="text" id="host" required="required" placeholder="主机IP" value="" />
+            <input type="text" id="username" value="" required="required" placeholder="用户名" />
+            <input type="password" id="password" required="required" placeholder="密码" />
             <input type="text" id="port" value="22" required="required" placeholder="端口" />
             <button class="button" type="submit">登录</button>
         </form>
-        <p class="github-star">
-            <!--<a href="https://gitee.com/zmzhou-star/web-shell/stargazers">-->
-                <!--<img src="https://gitee.com/zmzhou-star/web-shell/badge/star.svg?theme=dark" alt="star">-->
-            <!--</a>-->
-            <!--<a href="https://gitee.com/zmzhou-star/web-shell/members">-->
-                <!--<img src="https://gitee.com/zmzhou-star/web-shell/badge/fork.svg?theme=dark" alt="fork">-->
-            <!--</a>-->
-            <!--<a href="https://github.com/zmzhou-star/web-shell/stargazers" target="_blank" rel="noopener">-->
-                <!--<img src="https://badgen.net/github/stars/zmzhou-star/web-shell?icon=github&color=4ab8a1" data-origin="https://badgen.net/github/stars/zmzhou-star/web-shell?icon=github&color=4ab8a1" alt="stars">-->
-            <!--</a>-->
-            <!--<a href="https://github.com/zmzhou-star/web-shell/members" target="_blank" rel="noopener">-->
-                <!--<img src="https://badgen.net/github/forks/zmzhou-star/web-shell?icon=github&color=4ab8a1" data-origin="https://badgen.net/github/forks/zmzhou-star/web-shell?icon=github&color=4ab8a1" alt="forks">-->
-            <!--</a>-->
-        </p>
     </div>
     <div id="menu" class="menu" style="display: none">
         <label>菜单</label>
@@ -50,17 +34,33 @@
     <div id="terminal" class="indexContainer"></div>
 </body>
 <script>
-    // 解决第一次登录成功也跳转回登录问题
-    $(document).ready(function (){
-        let url = window.location.href;
-        if (!url.endsWith("/?#")) {
-            window.location.href = url + "?#";
+    // 读取cookie
+    function getCookie(name) {
+        var cookies = document.cookie;
+        var list = cookies.split("; "); // 解析出名/值对列表
+
+        for (var i = 0; i < list.length; i++) {
+            var arr = list[i].split("="); // 解析出名和值
+            if (arr[0] == name)
+                return decodeURIComponent(arr[1]); // 对cookie值解码
         }
-        let num1 = Math.round(Math.random()* 360);
-        let num2 = Math.round(Math.random()* 360);
-        $('body').css({background: 'linear-gradient(to left bottom, hsl(' + num1 + ', 100%, 85%) 0%,hsl(' + num2 + ', 100%, 85%) 100%)'})
-    })
-    // 获取容器宽高/字号大小，定义行数和列数
+        return "";
+    }
+
+    // 解决第一次登录成功也跳转回登录问题
+    $(document).ready(function() {
+
+            // let url = window.location.href;
+            // if (!url.endsWith("/?#")) {
+            //     window.location.href = url + "?#";
+            // }
+            let num1 = Math.round(Math.random() * 360);
+            let num2 = Math.round(Math.random() * 360);
+            $('body').css({
+                background: 'linear-gradient(to left bottom, hsl(' + num1 + ', 100%, 85%) 0%,hsl(' + num2 + ', 100%, 85%) 100%)'
+            })
+        })
+        // 获取容器宽高/字号大小，定义行数和列数
     let rows = document.querySelector(".indexContainer").offsetHeight / 16 - 5;
     let cols = document.querySelector(".indexContainer").offsetWidth / 9;
     let term = new Terminal({
@@ -70,7 +70,7 @@
         rows: parseInt(rows), //行数
         cols: parseInt(cols),
         convertEol: true, //启用时，光标将设置为下一行的开头
-        scrollback: 500,//终端中的回滚量
+        scrollback: 500, //终端中的回滚量
         disableStdin: false, //是否应禁用输入。
         cursorStyle: 'underline', //光标样式
         cursorBlink: true, //光标闪烁
@@ -87,7 +87,7 @@
     });
 
     term.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ')
-    // 换行并输入起始符“$”
+        // 换行并输入起始符“$”
     term.prompt = () => {
         term.write("\r\n$ ");
     };
@@ -105,22 +105,22 @@
         term.write('\r\nConnecting...');
         //执行连接操作
         client.connect({
-            onError: function (error) {
+            onError: function(error) {
                 //连接失败回调
                 term.write('Error: ' + error + '\r\n');
             },
-            onConnect: function () {
+            onConnect: function() {
                 //连接主机
                 client.send(params);
                 $("#login").hide();
                 $("#menu").show();
             },
-            onClose: function () {
+            onClose: function() {
                 //连接关闭回调
                 term.write("\rconnection closed");
                 $("#login").show();
             },
-            onData: function (data) {
+            onData: function(data) {
                 //收到数据时回调
                 term.write(data);
             }
@@ -131,27 +131,42 @@
         })
     }
     let params = {
-        operate:'connect',
-        host: '',//IP
-        port: '22',//端口号
-        username: '',//用户名
-        password: ''//密码
-    }
-    // connect(params, 'terminal')
+            operate: 'connect',
+            host: '', //IP
+            port: '22', //端口号
+            username: '', //用户名
+            password: '' //密码
+        }
+        // connect(params, 'terminal')
+
+    // params.host = getCookie('realIp')
+    // params.username = getCookie('templateUsername')
+    // params.password = getCookie('templatePassword')
 
     let loginParams = {};
+
     function login() {
+        // let params = {
+        //     operate: 'connect',
+        //     host: $("#host").val(), //IP
+        //     port: $("#port").val(), //端口号
+        //     username: $("#username").val(), //用户名
+        //     password: encrypt($("#password").val()) //密码
+        // }
+
         let params = {
-            operate:'connect',
-            host: $("#host").val(),//IP
-            port: $("#port").val(),//端口号
-            username: $("#username").val(),//用户名
-            password: encrypt($("#password").val())//密码
+            operate: 'connect',
+            host: getCookie('realIp'), //IP
+            port: $("#port").val(), //端口号
+            username: getCookie('templateUsername'), //用户名
+            password: encrypt(getCookie('templatePassword')) //密码
         }
         loginParams = params;
         // 修改页面标签
         document.title += " " + params.host;
         connect(params, 'terminal')
+        console.log('拿到的params', params);
+
     }
     // login()
     /** 连接SFTP服务 */
@@ -181,7 +196,11 @@
             // fitAddon.fit();
             // 窗口大小改变时触发xterm的resize方法，向后端发送行列数，格式由后端决定
             term.onResize(size => {
-                client.send({ Op: "resize", Cols: cols, Rows: rows });
+                client.send({
+                    Op: "resize",
+                    Cols: cols,
+                    Rows: rows
+                });
             });
         } catch (e) {
             console.log("e", e.message);
@@ -190,4 +209,5 @@
 
     window.addEventListener("resize", resizeScreen);
 </script>
+
 </html>
