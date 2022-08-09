@@ -14,12 +14,19 @@
     <script type="text/javascript" th:src="@{/static/js/web-socket.js}"></script>
     <script type="text/javascript" th:src="@{/static/js/crypto-js.min.js}"></script>
     <script type="text/javascript" th:src="@{/static/js/web-shell.js}"></script>
+
+    <!-- <script type="text/javascript" src="../static/js/xterm.js"></script>
+    <script type="text/javascript" src="../static/js/jquery-3.5.1.min.js"></script>
+    <script type="text/javascript" src="../static/js/web-socket.js"></script>
+    <script type="text/javascript" src="../static/js/crypto-js.min.js"></script>
+    <script type="text/javascript" src="../static/js/web-shell.js"></script> -->
+
 </head>
 
 <body>
     <div id="login" class="login">
-        <h1>登录Linux远程主机测试</h1>
-        <form action="#" onsubmit="login()">
+        <h1>登录Linux远程主机</h1>
+        <form autocomplete="off" action="#" onsubmit="login()">
             <input type="text" id="host" required="required" placeholder="主机IP" value="" />
             <input type="text" id="username" value="" required="required" placeholder="用户名" />
             <input type="password" id="password" required="required" placeholder="密码" />
@@ -33,34 +40,52 @@
     </div>
     <div id="terminal" class="indexContainer"></div>
 </body>
+
 <script>
-    // 读取cookie
-    function getCookie(name) {
-        var cookies = document.cookie;
-        var list = cookies.split("; "); // 解析出名/值对列表
-
-        for (var i = 0; i < list.length; i++) {
-            var arr = list[i].split("="); // 解析出名和值
-            if (arr[0] == name)
-                return decodeURIComponent(arr[1]); // 对cookie值解码
-        }
-        return "";
-    }
-
-    // 解决第一次登录成功也跳转回登录问题
     $(document).ready(function() {
+        let url = window.location.href;
 
-            // let url = window.location.href;
-            // if (!url.endsWith("/?#")) {
-            //     window.location.href = url + "?#";
-            // }
-            let num1 = Math.round(Math.random() * 360);
-            let num2 = Math.round(Math.random() * 360);
-            $('body').css({
-                background: 'linear-gradient(to left bottom, hsl(' + num1 + ', 100%, 85%) 0%,hsl(' + num2 + ', 100%, 85%) 100%)'
-            })
+        if (url.includes("ip")) {
+            let obj = {};
+
+            function GetUrlPara() {
+                var url = document.location.toString(); //获取当前URL
+                lacalUrl = url.split('?')[0]
+                let str = url.split("?")[1].split("&");
+                for (let i = 0; i < str.length; i++) {
+                    let a = str[i].split('=')
+                    if (a[0].includes('#')) {
+                        a[0] = a[0].slice(1)
+                    }
+                    obj[a[0]] = a[1]
+                }
+            }
+            GetUrlPara();
+            console.log('obj', obj);
+            let host = document.getElementById('host')
+            host.setAttribute('value', obj.ip)
+            let username = document.getElementById('username')
+            username.setAttribute('value', obj.username)
+            let pwd = document.getElementById('password')
+            pwd.setAttribute('value', obj.pwd)
+
+
+        }
+        console.log('url', url);
+
+        // 解决第一次登录成功也跳转回登录问题
+        if (!url.endsWith("?#")) {
+            window.location.href = url + "?#";
+            console.log('添加的次数');
+        }
+        let num1 = Math.round(Math.random() * 360);
+        let num2 = Math.round(Math.random() * 360);
+        $('body').css({
+            background: 'linear-gradient(to left bottom, hsl(' + num1 + ', 100%, 85%) 0%,hsl(' + num2 + ', 100%, 85%) 100%)'
         })
-        // 获取容器宽高/字号大小，定义行数和列数
+    })
+
+    // 获取容器宽高/字号大小，定义行数和列数
     let rows = document.querySelector(".indexContainer").offsetHeight / 16 - 5;
     let cols = document.querySelector(".indexContainer").offsetWidth / 9;
     let term = new Terminal({
@@ -100,6 +125,7 @@
      * @param {String} divId 显示控件id
      */
     function connect(params, divId) {
+        console.log('connect', params);
         term.open(document.getElementById(divId), true);
         //在页面上显示连接中...
         term.write('\r\nConnecting...');
@@ -131,41 +157,32 @@
         })
     }
     let params = {
-            operate: 'connect',
-            host: '', //IP
-            port: '22', //端口号
-            username: '', //用户名
-            password: '' //密码
-        }
-        // connect(params, 'terminal')
-
-    // params.host = getCookie('realIp')
-    // params.username = getCookie('templateUsername')
-    // params.password = getCookie('templatePassword')
-
+        operate: 'connect',
+        host: '', //IP
+        port: '22', //端口号
+        username: '', //用户名
+        password: '' //密码
+    }
     let loginParams = {};
 
     function login() {
-        // let params = {
-        //     operate: 'connect',
-        //     host: $("#host").val(), //IP
-        //     port: $("#port").val(), //端口号
-        //     username: $("#username").val(), //用户名
-        //     password: encrypt($("#password").val()) //密码
-        // }
+        // let url = document.location.toString(); //获取当前URL
+        // let localUrl = url.split('?')[0]
+        // console.log('lacalUrl', localUrl);
+        // document.location.href = `${localUrl}?#`
 
         let params = {
             operate: 'connect',
-            host: getCookie('realIp'), //IP
+            host: $("#host").val(), //IP
             port: $("#port").val(), //端口号
-            username: getCookie('templateUsername'), //用户名
-            password: encrypt(getCookie('templatePassword')) //密码
+            username: $("#username").val(), //用户名
+            password: encrypt($("#password").val()) //密码
         }
+
         loginParams = params;
-        // 修改页面标签
+        // // 修改页面标签
         document.title += " " + params.host;
         connect(params, 'terminal')
-        console.log('拿到的params', params);
 
     }
     // login()

@@ -7,6 +7,7 @@ package com.github.zmzhoustar.webshell.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
@@ -45,4 +46,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
 				// 设置允许跨域请求的域名
 				.allowedOriginPatterns(corsConfig.getAllowedOriginPatterns());
 	}
+
+//    @Override
+//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//        registry.addResourceHandler("/**").addResourceLocations("classpath:templates/");
+//    }
 }
